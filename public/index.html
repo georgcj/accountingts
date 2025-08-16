@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accounting Dashboard</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div id="app">
+        <div id="login-form" class="auth-container">
+            <div class="auth-card">
+                <h1>Accounting Dashboard</h1>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                    <button type="submit">Login</button>
+                </form>
+                <div id="login-error" class="error-message"></div>
+            </div>
+        </div>
+
+        <div id="dashboard" class="dashboard-container" style="display: none;">
+            <nav class="sidebar">
+                <div class="logo">
+                    <h2>Accounting</h2>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="/" data-route="/" class="nav-link active">Dashboard</a></li>
+                    <li><a href="/capture" data-route="/capture" class="nav-link">Capture</a></li>
+                    <li><a href="/upload" data-route="/upload" class="nav-link">Upload</a></li>
+                    <li><a href="/match" data-route="/match" class="nav-link">Match</a></li>
+                    <li><a href="/unmatched" data-route="/unmatched" class="nav-link">Unmatched</a></li>
+                    <li><a href="#" id="logout-btn" class="nav-link logout">Logout</a></li>
+                </ul>
+                <div class="processing-indicator" id="processing-indicator" style="display: none;">
+                    <div class="processing-icon">⚡</div>
+                    <div class="processing-text">Processing files...</div>
+                </div>
+            </nav>
+
+            <main class="main-content">
+                <header class="page-header">
+                    <h1 id="page-title">Dashboard</h1>
+                </header>
+
+                <div class="content">
+                    <div id="dashboard-page" class="page active">
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <h3>Total Transactions</h3>
+                                <div class="stat-value">0</div>
+                            </div>
+                            <div class="stat-card">
+                                <h3>Unmatched Items</h3>
+                                <div class="stat-value">0</div>
+                            </div>
+                            <div class="stat-card">
+                                <h3>Files Captured</h3>
+                                <div class="stat-value">0</div>
+                            </div>
+                            <div class="stat-card">
+                                <h3>Last Activity</h3>
+                                <div class="stat-value">None</div>
+                            </div>
+                        </div>
+                        <div class="recent-activity">
+                            <h3>Recent Activity</h3>
+                            <div class="activity-list">
+                                <p class="no-activity">No recent activity</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="capture-page" class="page">
+                        <div class="capture-layout">
+                            <!-- File Queue Sidebar -->
+                            <div class="file-queue-sidebar">
+                                <div class="queue-header">
+                                    <h3>Google Drive Files</h3>
+                                </div>
+                                <div class="queue-status">
+                                    <span id="queue-count">0 files</span>
+                                    <span id="queue-processing" style="display: none;">Processing...</span>
+                                </div>
+                                <div id="file-list" class="file-list">
+                                    <!-- Files will be populated here -->
+                                </div>
+                            </div>
+
+                            <!-- Main Content Area -->
+                            <div class="capture-main">
+                                <div id="no-file-selected" class="no-selection">
+                                    <h3>Select a file from the queue to start processing</h3>
+                                    <p>Files are automatically analyzed and ready for review.</p>
+                                </div>
+
+                                <div id="file-form-view" class="file-form" style="display: none;">
+                                    <!-- File Header -->
+                                    <div class="file-header">
+                                        <h3 id="current-file-name">Filename</h3>
+                                        <div class="file-actions">
+                                            <button id="reanalyze-file" class="btn btn-primary">Reanalyze</button>
+                                            <button id="save-file" class="btn btn-success">Save</button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Invoice Form -->
+                                    <div class="invoice-form">
+                                        <div class="form-grid">
+                                            <div class="form-group">
+                                                <label for="invoice-date">Date</label>
+                                                <input type="date" id="invoice-date" class="form-control">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="invoice-number">Invoice Number</label>
+                                                <input type="text" id="invoice-number" class="form-control">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="invoice-amount">Amount</label>
+                                                <input type="number" id="invoice-amount" class="form-control" step="0.01">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="tax-amount">Tax Amount</label>
+                                                <input type="number" id="tax-amount" class="form-control" step="0.01">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="invoice-description">Description</label>
+                                                <input type="text" id="invoice-description" class="form-control">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="is-internal">Type</label>
+                                                <select id="is-internal" class="form-control">
+                                                    <option value="false">External Invoice</option>
+                                                    <option value="true">Internal Invoice</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- File Preview -->
+                                    <div class="file-preview-section">
+                                        <h4>File Preview</h4>
+                                        <div id="file-preview-container"></div>
+                                    </div>
+                                </div>
+
+                                <div id="capture-status" class="status-message"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="upload-page" class="page">
+                        <h2>Upload Files</h2>
+                        <p>File upload functionality will be implemented here.</p>
+                    </div>
+
+                    <div id="match-page" class="page">
+                        <h2>Match Transactions</h2>
+                        <p>Transaction matching functionality will be implemented here.</p>
+                    </div>
+
+                    <div id="unmatched-page" class="page">
+                        <h2>Unmatched Items</h2>
+                        <p>Unmatched items will be displayed here.</p>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="/js/app.js"></script>
+</body>
+</html>
